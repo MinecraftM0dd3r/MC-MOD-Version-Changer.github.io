@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>JAR Version Changer</title>
+  <title>Minecraft Mod Version Changer</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
+      background-color: #f3f3f3;
     }
 
     h1 {
       margin-bottom: 20px;
+      color: #3a3a3a;
     }
 
     label {
       display: block;
       margin-bottom: 10px;
+      color: #3a3a3a;
+      font-weight: bold;
     }
 
-    input[type="text"] {
+    input[type="text"], input[type="file"] {
       width: 300px;
       padding: 5px;
     }
@@ -37,18 +41,18 @@
   </style>
 </head>
 <body>
-  <h1>JAR Version Changer</h1>
+  <h1>Minecraft Mod Version Changer</h1>
   
-  <label for="jarFilePath">JAR file path:</label>
-  <input type="text" id="jarFilePath">
+  <label for="jarFile">Select Minecraft JAR file:</label>
+  <input type="file" id="jarFile" accept=".jar">
 
-  <label for="currentVersion">Current version:</label>
+  <label for="currentVersion">Current Mod Version:</label>
   <input type="text" id="currentVersion">
 
-  <label for="newVersion">New version:</label>
+  <label for="newVersion">New Mod Version:</label>
   <input type="text" id="newVersion">
 
-  <button onclick="start()">Start</button>
+  <button onclick="start()">Change Version</button>
 
   <div id="result"></div>
 
@@ -81,13 +85,18 @@
     }
 
     function start() {
-      var jarFilePath = document.getElementById('jarFilePath').value;
+      var jarFile = document.getElementById('jarFile').files[0];
       var currentVersion = document.getElementById('currentVersion').value;
       var newVersion = document.getElementById('newVersion').value;
       var resultElement = document.getElementById('result');
 
       // Reset result
       resultElement.textContent = '';
+
+      if (!jarFile) {
+        resultElement.textContent = 'Please select a Minecraft JAR file.';
+        return;
+      }
 
       // Perform the operation
       var success = false;
@@ -103,13 +112,13 @@
         success = searchAndReplaceStringInFiles(directory, currentVersion, newVersion);
 
         if (success) {
-          resultElement.textContent = 'Modified files packed into JAR successfully.';
+          resultElement.textContent = 'Mod version changed successfully. The modified files are ready to be used.';
         } else {
-          resultElement.textContent = `No occurrences of "${currentVersion}" found. Operation unsuccessful.`;
+          resultElement.textContent = `No occurrences of "${currentVersion}" found. Mod version change unsuccessful.`;
         }
       } catch (error) {
         console.error(error);
-        resultElement.textContent = `An error occurred: ${error.message}`;
+        resultElement.textContent = 'An error occurred during the mod version change. Please try again.';
       }
     }
   </script>
