@@ -98,6 +98,13 @@
         return;
       }
 
+      // Get the destination directory from the user
+      var destinationDir = window.prompt('Select the destination directory to extract the JAR contents:');
+      if (!destinationDir) {
+        resultElement.textContent = 'Destination directory not selected.';
+        return;
+      }
+
       // Perform the operation
       var success = false;
       try {
@@ -105,7 +112,7 @@
         var rootDir = { name: '', content: directory, type: 'directory' };
         directory.push(rootDir);
 
-        // Extract the JAR contents (replace with your own code)
+        // Extract the JAR contents to the destination directory (replace with your own code)
 
         // Search and replace string in files
         success = searchAndReplaceStringInFiles(directory, currentVersion, newVersion);
