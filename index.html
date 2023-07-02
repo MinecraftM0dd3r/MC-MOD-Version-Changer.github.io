@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JAR Version Changer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+      width: 300px;
+      padding: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>JAR Version Changer</h1>
+  
+  <label for="jarFilePath">JAR file path:</label>
+  <input type="text" id="jarFilePath">
+
+  <label for="currentVersion">Current version:</label>
+  <input type="text" id="currentVersion">
+
+  <label for="newVersion">New version:</label>
+  <input type="text" id="newVersion">
+
+  <button onclick="start()">Start</button>
+
+  <div id="result"></div>
+
+  <script>
+    function searchAndReplaceStringInFiles(directory, currentVersion, newVersion) {
+      var success = false;
+
+      // Function to replace occurrences of a string in a file
+      function replaceInFile(file, current, replacement) {
+        var fileContent = file.content;
+        if (fileContent.includes(current)) {
+          var newContent = fileContent.replace(new RegExp(current, 'g'), replacement);
+          file.content = newContent;
+          success = true;
+        }
+      }
+
+      // Loop through the directory structure
+      for (var i = 0; i < directory.length; i++) {
+        var item = directory[i];
+
+        if (item.type === 'file' && (item.name.endsWith('.json') || item.name.endsWith('.MF'))) {
+          replaceInFile(item, currentVersion, newVersion);
+        } else if (item.type === 'directory') {
+          searchAndReplaceStringInFiles(item.content, currentVersion, newVersion);
+        }
+      }
+
+      return success;
+    }
+
+    function start() {
+      var jarFilePath = document.getElementById('jarFilePath').value;
+      var currentVersion = document.getElementById('currentVersion').value;
+      var newVersion = document.getElementById('newVersion').value;
+      var resultElement = document.getElementById('result');
+
+      // Reset result
+      resultElement.textContent = '';
+
+      // Perform the operation
+      var success = false;
+      try {
+        var directory = []; // Directory structure
+        var rootDir = { name: '', content: directory, type: 'directory' };
+        directory.push(rootDir);
+
+        // Extract the JAR contents
+        // You can replace this with your own code to extract the files
+
+        // Search and replace string in files
+        success = searchAndReplaceStringInFiles(directory, currentVersion, newVersion);
+
+        if (success) {
+          resultElement.textContent = 'Modified files packed into JAR successfully.';
+        } else {
+          resultElement.textContent = `No occurrences of "${currentVersion}" found. Operation unsuccessful.`;
+        }
+      } catch (error) {
+        console.error(error);
+        resultElement.textContent = `An error occurred: ${error.message}`;
+      }
+    }
+  </script>
+</body>
+</html>
